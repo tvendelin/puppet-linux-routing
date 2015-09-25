@@ -12,6 +12,32 @@ Currently tested against:
 
 More to be added as necessary.
 
+###Installation:
+
+This repository contains two Puppet modules, ext and iproute_test:
+```
+├── modules
+│   ├── ext
+│   │   └── lib
+│   │       └── puppet
+│   │           ├── provider
+│   │           │   └── iproutes
+│   │           │       ├── iproutes.rb
+│   │           │       ├── routing_conf_debian.rb
+│   │           │       ├── routing_conf_redhat.rb
+│   │           │       └── routing_conf_sles.rb
+│   │           └── type
+│   │               └── iproutes.rb
+│   └── iproute_test
+│       └── manifests
+│           └── init.pp
+└── README.md
+
+```
+Create an ordinary Puppet module for holding Puppet extensions, if you haven't done it already, and copy (or merge) the contents of modules/ext directory found in this repository into it.
+
+The iproute_test module is provided for testing and as a usage example.
+
 ###Usage:
 ```
 	 iproutes{'main':
@@ -24,6 +50,9 @@ More to be added as necessary.
 		stop_on_repeating_subnet  => false  # Default is true
 	 }
 ```
+Both 'default' and '0.0.0.0/0' can be used for default route. 
+Internally, 'default' will be converted into '0.0.0.0/0'. 
+
 Not suitable (intentionally) for setups using IP-forwarding.
 
 ###Provider Structure:
@@ -44,3 +73,47 @@ Thus, if there was no manual intervention, the client's ability to
 contact the master should persist (your ssh session might not,
 though). If the ssh session is lost, the routing can be corrected
 in the manifest and will be applied in the next run of puppet agent.
+
+####Parameters
+**name**
+The resource title is always 'main' as only the main routing table is handled
+
+**safety_sleep**
+A time to wait (in seconds) before applying changes, allowing the user to hit ^C.
+
+Hint: set this in a default declaration, like
+```
+Iproutes{
+  safety_sleep => 20,
+}
+```
+Defaults to "0". Converted into integer internally.
+
+**stop_on_repeating_subnet**
+
+What to do if multiple entries found for exactly the same 
+subnet. WARNING: if that be the case, it is a strong 
+indication of manual intervention. That means, it cannot be 
+guaranteed, that after the double entries are removed, the 
+client could still reach the puppet master in case of a 
+configuration error. This is because the deleted routes might 
+not have been persistently configured.
+
+The default is "true"
+
+Hint: set this in a default declaration, like
+```
+Iproutes{
+  stop_on_repeating_subnet => false,
+}
+```
+Defaults to "true"
+
+#### Properties
+
+**routes**
+
+A Hash of Hashes that holds all routing configuration. See the usage example above.
+
+
+
