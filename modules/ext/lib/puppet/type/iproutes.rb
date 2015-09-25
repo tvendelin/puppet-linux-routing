@@ -3,7 +3,8 @@ Puppet::Type.newtype(:iproutes) do
 
 	desc "Defines 'main' Linux routing table for IPv4 routes to gateways.
 	The associated configuration files for a particular distribution
-	are handled by respective providers. Currently supported distribution are:
+	are handled by respective providers. 
+  Currently supported distribution are:
 	 - Debian
 	 - Red Hat
 	 - CentOS
@@ -76,11 +77,13 @@ Puppet::Type.newtype(:iproutes) do
 	end
 
 	newparam(:stop_on_repeating_subnet) do
-		desc 'What to do if multiple entries found for exactly the same subnet.
-		WARNING: if that be the case, it is a strong indication of manual intervention.
-		That means, it cannot be guaranteed, that after the double entries are removed,
-		the client could still reach the puppet master in case of a configuration error.
-		This is because the deleted routes might not be persistently configured.
+    desc 'What to do if multiple entries found for exactly the same 
+    subnet. WARNING: if that be the case, it is a strong 
+    indication of manual intervention. That means, it cannot be 
+    guaranteed, that after the double entries are removed, the 
+    client could still reach the puppet master in case of a 
+    configuration error. This is because the deleted routes might 
+    not have been persistently configured.
 
 		The default is "true"
 
@@ -111,12 +114,13 @@ Puppet::Type.newtype(:iproutes) do
 			'default'       => { 'gateway' => '172.16.2.2', 'iface' => 'eth0' },
 		}
 
-		Both 'default' and '0.0.0.0/0' can be used for default route. Internally,
-		'default' will be converted into '0.0.0.0/0'.
-
-		Each route must contain the name of respective interface. This restriction
-		is intended to ensure that whoever defines/changes the routing configuration,
-		knows exactly what (s)he is doing. IP-forwarding won't work, of course.
+    Both 'default' and '0.0.0.0/0' can be used for default route. 
+    Internally, 'default' will be converted into '0.0.0.0/0'. 
+    
+    Each route must contain the name of respective interface. This 
+    restriction is intended to ensure that whoever defines/changes 
+    the routing configuration, knows exactly what (s)he is doing. 
+    IP-forwarding won't work, of course.
 		"
 
 		# To avoid the default uglified log output.
