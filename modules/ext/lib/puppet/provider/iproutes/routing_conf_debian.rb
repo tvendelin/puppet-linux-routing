@@ -33,7 +33,8 @@ Puppet::Type.type(:iproutes).provide( :routing_conf_debian, :parent => :iproutes
     if File.readable?(configf)
       f = File.open( configf, 'r' )
       islines = f.read
-      f.chmod(0755)
+      Puppet.debug "Ensure >%s< is executable" % configf
+      f.chmod(0755) if sprintf("%o", f.stat.mode) != '100755'
       f.close
     end
 
